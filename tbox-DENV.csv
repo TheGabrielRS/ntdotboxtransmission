@@ -1,0 +1,28 @@
+IBGECode,GeographicLocation,Vector,Host,Pathogen,Manifestation,DENV,AedesAegypt,AedesAlbopictus
+11,Rondônia,AedesAegypt ,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,
+12,Acre,AedesAegypt ,Human,DENV1 ,DengueFever,DENV1 ,AedesAegypt,
+13,Amazonas,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+14,Roraima,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+15,Pará,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+16,Amapá,AedesAegypt ,Human,DENV1 DENV2 ,DengueFever,DENV1 DENV2 ,AedesAegypt,
+17,Tocantins,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+21,Maranhão,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+22,Piauí,AedesAegypt ,Human,DENV1 DENV2 DENV3 ,DengueFever,DENV1 DENV2 DENV3 ,AedesAegypt,
+23,Ceará,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,AedesAlbopictus
+24,Rio Grande do Norte,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,AedesAlbopictus
+25,Paraíba,AedesAegypt ,Human,DENV1 DENV2 ,DengueFever,DENV1 DENV2 ,AedesAegypt,
+26,Pernambuco,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+27,Alagoas,AedesAegypt ,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,
+28,Sergipe,AedesAegypt ,Human,DENV1 DENV2 ,DengueFever,DENV1 DENV2 ,AedesAegypt,
+29,Bahia,AedesAegypt ,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,
+31,Minas Gerais,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,AedesAlbopictus
+32,Espírito Santo,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,AedesAlbopictus
+33,Rio de Janeiro,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+35,São Paulo,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,AedesAlbopictus
+41,Paraná,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+42,Santa Catarina,AedesAegypt ,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,
+43,Rio Grande do Sul,AedesAegypt ,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,
+50,Mato Grosso do Sul,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+51,Mato Grosso,AedesAegypt AedesAlbopictus,Human,DENV1 DENV2 DENV4 ,DengueFever,DENV1 DENV2 DENV4 ,AedesAegypt,AedesAlbopictus
+52,Goiás,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,
+53,Distrito Federal,AedesAegypt ,Human,DENV1 DENV2 DENV3 DENV4 ,DengueFever,DENV1 DENV2 DENV3 DENV4 ,AedesAegypt,

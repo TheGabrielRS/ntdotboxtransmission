@@ -1,0 +1,6 @@
+*.jar
+ntdo2.owl
+out
+owlapi-dependencypack-5.1.17
+opencsv
+.idea

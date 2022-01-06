@@ -3,6 +3,7 @@ package br.edu.ufcspa;
 import br.edu.ufcspa.factory.Core;
 import br.edu.ufcspa.model.Transmission;
 import com.opencsv.bean.FieldAccess;
+import org.apache.commons.lang3.StringUtils;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
 import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat;
@@ -53,13 +54,7 @@ public class Main {
         String[] classesDisjoint = {"Vertebrate", "Protist", "Arthropod"};
         core.disjointClasses(classesDisjoint);
 
-//        OWLClass transfer = dataFactory.getOWLClass(iri+"#Transfer");
-//        OWLDeclarationAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(transfer);
-//        ntdoTboxTransmission.add(declarationAxiom);
-//        OWLClass pathologicalDisposition = dataFactory.getOWLClass(iri+"#PathologicalDisposition");
-//        OWLClass
 
-/*
         FileReader dengueTbox = null;
         try {
             dengueTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-DENV.csv");
@@ -73,9 +68,18 @@ public class Main {
                 .parse();
 
         for(Transmission item : denv){
-            System.out.println(item.state);
+            core.declareClass(StringUtils.deleteWhitespace(item.state)+"Location");
         }
-*/
+
+
+
+//        OWLClass transfer = dataFactory.getOWLClass(iri+"#Transfer");
+//        OWLDeclarationAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(transfer);
+//        ntdoTboxTransmission.add(declarationAxiom);
+//        OWLClass pathologicalDisposition = dataFactory.getOWLClass(iri+"#PathologicalDisposition");
+//        OWLClass
+
+
         File tboxFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tboxTransmission.owl");
         try {
             man.saveOntology(ntdoTboxTransmission, new OWLXMLDocumentFormat(), new FileOutputStream(tboxFile));

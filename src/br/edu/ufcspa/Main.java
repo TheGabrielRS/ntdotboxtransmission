@@ -1,13 +1,13 @@
 package br.edu.ufcspa;
 
+import br.edu.ufcspa.factory.Core;
 import br.edu.ufcspa.model.Transmission;
 import com.opencsv.bean.FieldAccess;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
-import org.semanticweb.owlapi.model.IRI;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat;
+import org.semanticweb.owlapi.formats.OWLXMLDocumentFormat;
+import org.semanticweb.owlapi.model.*;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
@@ -26,18 +26,40 @@ public class Main {
 //
 //        File ntdoFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\ntdo2.owl");
 
+
+        IRI iri = IRI.create("ntdoOntology");
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 
-        File tboxFile = new File("C:\\\\Users\\\\Pichau\\\\IdeaProjects\\\\NTDOTBoxGenerator\\\\tboxTransmission.owl\"");
+        OWLOntology ntdoTboxTransmission = man.createOntology(iri);
 
-        OWLOntology ntdoTboxTransmission = man.loadOntologyFromOntologyDocument(tboxFile);
+        /*
+        Criando classes base
+         */
+
+        OWLDataFactory dataFactory = ntdoTboxTransmission.getOWLOntologyManager().getOWLDataFactory();
+
+        Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
+
+        String[] base = {"Transfer", "PathologicalDisposition", "GeographicEntity", "Organism"};
+
+        for (String baseItem: base) {
+            core.declareClass(baseItem);
+        }
 
 
 
+        core.declareSubClassOf("Organism", "Vertebrate");
 
+        String[] classesDisjoint = {"Vertebrate", "Protist", "Arthropod"};
+        core.disjointClasses(classesDisjoint);
 
+//        OWLClass transfer = dataFactory.getOWLClass(iri+"#Transfer");
+//        OWLDeclarationAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(transfer);
+//        ntdoTboxTransmission.add(declarationAxiom);
+//        OWLClass pathologicalDisposition = dataFactory.getOWLClass(iri+"#PathologicalDisposition");
+//        OWLClass
 
-
+/*
         FileReader dengueTbox = null;
         try {
             dengueTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-DENV.csv");
@@ -53,11 +75,15 @@ public class Main {
         for(Transmission item : denv){
             System.out.println(item.state);
         }
-
-
-//        man.saveOntology(ntdoTboxTransmission, new FunctionalSyntaxDocumentFormat(), new FileOutputStream(tboxFile));
-
-
+*/
+        File tboxFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tboxTransmission.owl");
+        try {
+            man.saveOntology(ntdoTboxTransmission, new OWLXMLDocumentFormat(), new FileOutputStream(tboxFile));
+        } catch (OWLOntologyStorageException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
 
     }

@@ -6,6 +6,8 @@ import java.util.List;
 
 public class PathogenTransferByVector {
 
+    public String className;
+
     public List<String> hasAgent;
 
     public List<String> hasLocusGeographic;
@@ -14,8 +16,8 @@ public class PathogenTransferByVector {
 
     public List<String> hasLocusHost;
 
-
-    public PathogenTransferByVector(List<String> hasAgent, List<String> hasLocusGeographic, List<String> hasPatient, List<String> hasLocusHost) {
+    public PathogenTransferByVector(String className, List<String> hasAgent, List<String> hasLocusGeographic, List<String> hasPatient, List<String> hasLocusHost) {
+        this.className = className;
         this.hasAgent = hasAgent;
         this.hasLocusGeographic = hasLocusGeographic;
         this.hasPatient = hasPatient;

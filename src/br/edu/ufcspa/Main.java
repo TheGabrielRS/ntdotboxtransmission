@@ -14,10 +14,7 @@ import org.semanticweb.owlapi.model.*;
 
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,14 +90,14 @@ Pathogen
 /*
 DENV
 */
-        Tools tools = new Tools();
-        ArrayList<String> pathogens = tools.identifyClassesFromSingleColumn(denv, Transmission.PATHOGENPOSITION);
+            Tools tools = new Tools();
+            ArrayList<String> pathogens = tools.identifyClassesFromSingleColumn(denv, Transmission.PATHOGENPOSITION);
 
-        for(String pathogen : pathogens){
-            core.declareClass(pathogen);
-            core.declareSubClassOf(ClassName.VIRUS, pathogen);
-        }
-        core.disjointClasses(pathogens);
+            for(String pathogen : pathogens){
+                core.declareClass(pathogen);
+                core.declareSubClassOf(ClassName.VIRUS, pathogen);
+            }
+            core.disjointClasses(pathogens);
 
 /*
 Vector
@@ -125,15 +122,17 @@ Manifestation/Disposition
 /*
 PathogenTransferByVector
  */
-
-
         core.declareClass(ClassName.PATHOGENTRANSFERBYVECTOR);
-
+        core.declareSubClassOf(ClassName.TRANSFER, ClassName.PATHOGENTRANSFERBYVECTOR);
+        List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
         int lineNumber = 1;
         for(Transmission line : denv){
-            core.declareClass(ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber));
+            String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber);
+            core.declareClass(className);
+            pathogenTransferByVectorClassesName.add(className);
             lineNumber++;
         }
+        core.equivalentClassToUnion(ClassName.PATHOGENTRANSFERBYVECTOR, pathogenTransferByVectorClassesName);
 
 
 

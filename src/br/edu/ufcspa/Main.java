@@ -131,16 +131,19 @@ PathogenTransferByVector
             String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber);
             lineNumber++;
 
-            core.declareClass(className);
-            pathogenTransferByVectorClassesName.add(className);
-
             PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
+                    className,
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.VECTORPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.STATEPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION)
             );
             System.out.println(pathogenTransferByVector);
+
+            core.declareClass(pathogenTransferByVector.className);
+            pathogenTransferByVectorClassesName.add(pathogenTransferByVector.className);
+
+            core.pathogenTransferByVectorExistentialAxiom(pathogenTransferByVector);
 
         }
         core.equivalentClassToUnion(ClassName.PATHOGENTRANSFERBYVECTOR, pathogenTransferByVectorClassesName);

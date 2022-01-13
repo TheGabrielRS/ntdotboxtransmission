@@ -4,6 +4,7 @@ import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.ChangeApplied;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,6 +38,13 @@ public class Core {
 
     public ChangeApplied disjointClasses(String[] classesName){
 
+        List<String> classes = new ArrayList<>(Arrays.asList(classesName));
+
+        return this.disjointClasses(classes);
+
+    }
+
+    public ChangeApplied disjointClasses(List<String> classesName){
         List<OWLClass> classesToBeDisjoint = new ArrayList<>();
 
         for (String className: classesName) {

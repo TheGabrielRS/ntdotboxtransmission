@@ -1,6 +1,8 @@
 package br.edu.ufcspa;
 
 import br.edu.ufcspa.factory.Core;
+import br.edu.ufcspa.factory.Tools;
+import br.edu.ufcspa.model.ClassName;
 import br.edu.ufcspa.model.Transmission;
 import com.opencsv.bean.FieldAccess;
 import org.apache.commons.lang3.StringUtils;
@@ -16,6 +18,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -27,8 +32,8 @@ public class Main {
 //
 //        File ntdoFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\ntdo2.owl");
 
-
-        IRI iri = IRI.create("ntdoOntology");
+//
+        IRI iri = IRI.create("http://purl.org/ntdo2/");
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 
         OWLOntology ntdoTboxTransmission = man.createOntology(iri);
@@ -41,18 +46,15 @@ public class Main {
 
         Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
 
-        String[] base = {"Transfer", "PathologicalDisposition", "GeographicEntity", "Organism"};
+        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.GEOGRAPHICENTITY, ClassName.ORGANISM, ClassName.VIRUS, ClassName.HUMAN};
 
         for (String baseItem: base) {
             core.declareClass(baseItem);
         }
 
+        core.declareSubClassOf(ClassName.ORGANISM, ClassName.VERTEBRATE);
+        core.declareSubClassOf(ClassName.VERTEBRATE, ClassName.HUMAN);
 
-
-        core.declareSubClassOf("Organism", "Vertebrate");
-
-        String[] classesDisjoint = {"Vertebrate", "Protist", "Arthropod"};
-        core.disjointClasses(classesDisjoint);
 
 
         FileReader dengueTbox = null;
@@ -66,9 +68,71 @@ public class Main {
                 .withType(Transmission.class)
                 .build()
                 .parse();
+        denv.remove(0); //Remove header
 
-        for(Transmission item : denv){
-            core.declareClass(StringUtils.deleteWhitespace(item.state)+"Location");
+/*
+Location
+ */
+
+        core.declareClass(ClassName.BRAZILOCATION);
+        core.declareSubClassOf(ClassName.GEOGRAPHICENTITY, ClassName.BRAZILOCATION);
+        for(Transmission line : denv){
+
+            String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
+            String locationClassName = clearStateName+"Location";
+
+            core.declareClass(locationClassName);
+            core.declareSubClassOf(ClassName.GEOGRAPHICENTITY, locationClassName);
+            core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
+
+        }
+
+/*
+Pathogen
+*/
+/*
+DENV
+*/
+        Tools tools = new Tools();
+        ArrayList<String> pathogens = tools.identifyClassesFromSingleColumn(denv, Transmission.PATHOGENPOSITION);
+
+        for(String pathogen : pathogens){
+            core.declareClass(pathogen);
+            core.declareSubClassOf(ClassName.VIRUS, pathogen);
+        }
+        core.disjointClasses(pathogens);
+
+/*
+Vector
+ */
+        ArrayList<String> vectors = tools.identifyClassesFromSingleColumn(denv, Transmission.VECTORPOSITION);
+
+        for(String vector : vectors){
+            core.declareClass(vector);
+        }
+        core.disjointClasses(vectors);
+
+/*
+Manifestation/Disposition
+ */
+
+        ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
+
+        for(String manifestation : manifestations){
+            core.declareClass(manifestation+"Disposition");
+        }
+
+/*
+PathogenTransferByVector
+ */
+
+
+        core.declareClass(ClassName.PATHOGENTRANSFERBYVECTOR);
+
+        int lineNumber = 1;
+        for(Transmission line : denv){
+            core.declareClass(ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber));
+            lineNumber++;
         }
 
 

@@ -55,6 +55,41 @@ public class Core {
         return this.owlOntology.add(disjointClassesAxiom);
     }
 
+    public ChangeApplied equivalentClasses(List<String> equivalentClasses){
+
+        List<OWLClass> owlClasses = this.getCollectionOfClasses(equivalentClasses);
+
+        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(owlClasses);
+        return this.owlOntology.add(equivalentClassesAxiom);
+    }
+
+    public ChangeApplied equivalentClassToUnion(String className, List<String> classesToBeUnion){
+        OWLObjectUnionOf unionOfClasses = this.unionOfClasses(classesToBeUnion);
+
+        OWLClass classEquivalent = this.getClass(className);
+
+        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(classEquivalent, unionOfClasses);
+
+        return this.owlOntology.add(equivalentClassesAxiom);
+    }
+
+    private OWLObjectUnionOf unionOfClasses(List<String> unionClasses){
+
+        List<OWLClass> owlClasses = this.getCollectionOfClasses(unionClasses);
+
+        return this.owlDataFactory.getOWLObjectUnionOf(owlClasses);
+
+    }
+
+    private List<OWLClass> getCollectionOfClasses(List<String> classNames){
+
+        List<OWLClass> owlClasses = new ArrayList<>();
+        for(String className : classNames){
+            owlClasses.add(this.getClass(className));
+        }
+        return owlClasses;
+    }
+
     private OWLClass getClass(String className){
         return this.owlDataFactory.getOWLClass(this.iri+"#"+className);
     }

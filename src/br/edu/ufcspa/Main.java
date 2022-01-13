@@ -3,6 +3,7 @@ package br.edu.ufcspa;
 import br.edu.ufcspa.factory.Core;
 import br.edu.ufcspa.factory.Tools;
 import br.edu.ufcspa.model.ClassName;
+import br.edu.ufcspa.model.PathogenTransferByVector;
 import br.edu.ufcspa.model.Transmission;
 import com.opencsv.bean.FieldAccess;
 import org.apache.commons.lang3.StringUtils;
@@ -128,9 +129,19 @@ PathogenTransferByVector
         int lineNumber = 1;
         for(Transmission line : denv){
             String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber);
+            lineNumber++;
+
             core.declareClass(className);
             pathogenTransferByVectorClassesName.add(className);
-            lineNumber++;
+
+            PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.VECTORPOSITION),
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.STATEPOSITION),
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION),
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION)
+            );
+            System.out.println(pathogenTransferByVector);
+
         }
         core.equivalentClassToUnion(ClassName.PATHOGENTRANSFERBYVECTOR, pathogenTransferByVectorClassesName);
 

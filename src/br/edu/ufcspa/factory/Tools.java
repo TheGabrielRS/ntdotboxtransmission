@@ -3,6 +3,7 @@ package br.edu.ufcspa.factory;
 import br.edu.ufcspa.model.Transmission;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Tools {
@@ -26,6 +27,14 @@ public class Tools {
         }
 
         return equalRecords;
+    }
+
+    public List<String> identifyClassesFromSingleLineByColumn(Transmission line, int position){
+        String lineContent = this.getValueFromProperty(line, position);
+
+        List<String> classesFromSingleLineByColumn = Arrays.asList(lineContent.split(" "));
+
+        return classesFromSingleLineByColumn;
     }
 
     private String getValueFromProperty(Transmission line, int position){

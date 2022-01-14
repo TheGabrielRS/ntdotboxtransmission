@@ -80,7 +80,6 @@ Location
             String locationClassName = clearStateName+"Location";
 
             core.declareClass(locationClassName);
-            core.declareSubClassOf(ClassName.GEOGRAPHICENTITY, locationClassName);
             core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
 
         }

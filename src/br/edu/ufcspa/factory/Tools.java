@@ -1,6 +1,8 @@
 package br.edu.ufcspa.factory;
 
 import br.edu.ufcspa.model.Transmission;
+import org.apache.commons.lang3.StringUtils;
+import org.semanticweb.owlapi.model.OWLClass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,9 +34,19 @@ public class Tools {
     public List<String> identifyClassesFromSingleLineByColumn(Transmission line, int position){
         String lineContent = this.getValueFromProperty(line, position);
 
+        if(position == Transmission.STATEPOSITION)
+            lineContent = this.getLocationClassName(lineContent);
+
         List<String> classesFromSingleLineByColumn = Arrays.asList(lineContent.split(" "));
 
         return classesFromSingleLineByColumn;
+    }
+
+    private String getLocationClassName(String className){
+
+        className = StringUtils.deleteWhitespace(className);
+
+        return className+"Location";
     }
 
     private String getValueFromProperty(Transmission line, int position){

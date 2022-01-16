@@ -127,7 +127,7 @@ PathogenTransferByVector
         List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
         int lineNumber = 1;
         for(Transmission line : denv){
-            String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+String.valueOf(lineNumber);
+            String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+lineNumber;
             lineNumber++;
 
             PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
@@ -146,6 +146,7 @@ PathogenTransferByVector
 
         }
         core.equivalentClassToUnion(ClassName.PATHOGENTRANSFERBYVECTOR, pathogenTransferByVectorClassesName);
+        core.disjointClasses(pathogenTransferByVectorClassesName);
 
 
 

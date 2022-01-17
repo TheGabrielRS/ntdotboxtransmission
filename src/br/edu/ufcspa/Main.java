@@ -116,7 +116,12 @@ Manifestation/Disposition
         ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
 
         for(String manifestation : manifestations){
-            core.declareClass(manifestation+"Disposition");
+            String manifestationDisposition = manifestation+"Disposition";
+            core.declareClass(manifestation);
+            core.declareClass(manifestationDisposition;
+
+            core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);
+
         }
 
 /*

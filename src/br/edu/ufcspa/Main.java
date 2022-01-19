@@ -77,6 +77,7 @@ Location
         for(Transmission line : denv){
 
             String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
+            line.state = clearStateName;
             String locationClassName = clearStateName+"Location";
 
             core.declareClass(locationClassName);
@@ -116,7 +117,12 @@ Manifestation/Disposition
         ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
 
         for(String manifestation : manifestations){
-            core.declareClass(manifestation+"Disposition");
+            String manifestationDisposition = manifestation+"Disposition";
+            core.declareClass(manifestation);
+            core.declareClass(manifestationDisposition;
+
+            core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);
+
         }
 
 /*

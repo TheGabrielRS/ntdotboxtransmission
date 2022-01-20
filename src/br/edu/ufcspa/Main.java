@@ -128,12 +128,29 @@ Manifestation/Disposition
 /*
 PathogenTransferByVector
  */
-        core.declareClass(ClassName.PATHOGENTRANSFERBYVECTOR);
-        core.declareSubClassOf(ClassName.TRANSFER, ClassName.PATHOGENTRANSFERBYVECTOR);
+
+        String manifestationName;
+        switch (denv.get(0).manifestation){
+            case "DengueFever":
+                manifestationName = "Dengue";
+                break;
+            case "ZikaFever":
+                manifestationName = "Zika";
+                break;
+            case "ChikungunyaFever":
+                manifestationName = "ChikungunyaFever";
+                break;
+            default:
+                manifestationName = "Pathogen";
+        }
+        String manifestationClassName = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR;
+        core.declareClass(manifestationClassName);
+        core.declareSubClassOf(ClassName.TRANSFER, manifestationClassName);
         List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
         int lineNumber = 1;
         for(Transmission line : denv){
-            String className = ClassName.PATHOGENTRANSFERBYVECTOR+"_"+lineNumber;
+
+            String className = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR+"_"+lineNumber;
             lineNumber++;
 
             PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
@@ -151,7 +168,7 @@ PathogenTransferByVector
             core.pathogenTransferByVectorExistentialAxiom(pathogenTransferByVector);
 
         }
-        core.equivalentClassToUnion(ClassName.PATHOGENTRANSFERBYVECTOR, pathogenTransferByVectorClassesName);
+        core.equivalentClassToUnion(manifestationClassName, pathogenTransferByVectorClassesName);
         core.disjointClasses(pathogenTransferByVectorClassesName);
 
 

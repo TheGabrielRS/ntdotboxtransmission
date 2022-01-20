@@ -6,10 +6,7 @@ import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.ChangeApplied;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class Core {
 
@@ -85,7 +82,7 @@ public class Core {
         OWLClass transfer = this.getClass(ClassName.TRANSFER);
         //and
         OWLObjectUnionOf hasAgent = this.unionOfClasses(pathogenTransferByVector.hasAgent);
-        OWLObjectUnionOf hasLocusGeographic = this.unionOfClasses(pathogenTransferByVector.hasLocusGeographic);
+        OWLObjectUnionOf hasGeographicLocation = this.unionOfClasses(pathogenTransferByVector.hasLocusGeographic);
         //or
         OWLObjectUnionOf hasPatient = this.unionOfClasses(pathogenTransferByVector.hasPatient);
         OWLObjectUnionOf hasLocusHost = this.unionOfClasses(pathogenTransferByVector.hasLocusHost);
@@ -96,11 +93,11 @@ public class Core {
         OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasLocusGeographicValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasLocus", hasLocusGeographic);
+        OWLObjectSomeValuesFrom hasLocusGeographicValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
         expressionsToBeIntersected.add(hasLocusGeographicValuesFrom);
 
 
-        OWLObjectSomeValuesFrom hasLocustHostValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasLocus", hasLocusHost);
+        OWLObjectSomeValuesFrom hasLocustHostValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isPhysicallyContainedIn", hasLocusHost);
 
         OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(hasLocustHostValuesFrom, hasPatient);
 

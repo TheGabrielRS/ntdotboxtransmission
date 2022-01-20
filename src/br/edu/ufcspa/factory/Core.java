@@ -103,7 +103,7 @@ public class Core {
         OWLObjectUnionOf hasGeographicLocation = this.unionOfClasses(pathogenTransferByVector.hasLocusGeographic);
         //or
         OWLObjectUnionOf hasPatient = this.unionOfClasses(pathogenTransferByVector.hasPatient);
-        OWLObjectUnionOf hasLocusHost = this.unionOfClasses(pathogenTransferByVector.hasLocusHost);
+        OWLObjectUnionOf isPhysicallyContainedIn = this.unionOfClasses(pathogenTransferByVector.hasLocusHost);
 
         List<OWLClassExpression> expressionsToBeIntersected = new ArrayList<>();
         expressionsToBeIntersected.add(transfer);
@@ -111,13 +111,13 @@ public class Core {
         OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasLocusGeographicValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
-        expressionsToBeIntersected.add(hasLocusGeographicValuesFrom);
+        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
+        expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
 
 
-        OWLObjectSomeValuesFrom hasLocustHostValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isPhysicallyContainedIn", hasLocusHost);
+        OWLObjectSomeValuesFrom isPhysicallyContainedInValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isPhysicallyContainedIn", isPhysicallyContainedIn);
 
-        OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(hasLocustHostValuesFrom, hasPatient);
+        OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(isPhysicallyContainedInValuesFrom, hasPatient);
 
         OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue("#hasPatient", hasPatientIntersectionProperty);
         expressionsToBeIntersected.add(hasPatientValuesFrom);
@@ -126,6 +126,42 @@ public class Core {
         OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(pathogenTransferOWLClass, owlObjectIntersectionOf);
 
         return this.owlOntology.add(equivalentClassesAxiom);
+
+    }
+
+    public ChangeApplied pathogenTransferByVectorQuantificationAxiom(PathogenTransferByVector pathogenTransferByVector){
+
+        OWLClass pathogenTransferOWLClass = this.getClass(pathogenTransferByVector.className);
+        //subClassOf
+        OWLClass transfer = this.getClass(ClassName.TRANSFER);
+        //and
+        OWLObjectUnionOf hasAgent = this.unionOfClasses(pathogenTransferByVector.hasAgent);
+        OWLObjectUnionOf hasGeographicLocation = this.unionOfClasses(pathogenTransferByVector.hasLocusGeographic);
+        //or
+        OWLObjectUnionOf hasPatient = this.unionOfClasses(pathogenTransferByVector.hasPatient);
+        OWLObjectUnionOf causes = this.unionOfClasses(pathogenTransferByVector.causes);
+
+        List<OWLClassExpression> expressionsToBeIntersected = new ArrayList<>();
+        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasAgent", hasAgent);
+        expressionsToBeIntersected.add(hasAgentValuesFrom);
+
+        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
+        expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
+
+
+        OWLObjectSomeValuesFrom causesValuesFrom = this.objectUnionToObjectSomeValuesFrom("#causes", causes);
+
+        OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(causesValuesFrom, hasPatient);
+
+        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue("#hasPatient", hasPatientIntersectionProperty);
+        expressionsToBeIntersected.add(hasPatientValuesFrom);
+
+        OWLObjectIntersectionOf owlObjectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(expressionsToBeIntersected);
+
+        OWLSubClassOfAxiom subClassOfAxiom = this.owlDataFactory.getOWLSubClassOfAxiom(pathogenTransferOWLClass, owlObjectIntersectionOf);
+
+        return this.owlOntology.add(subClassOfAxiom);
+
 
     }
 

@@ -16,12 +16,15 @@ public class PathogenTransferByVector {
 
     public List<String> hasLocusHost;
 
-    public PathogenTransferByVector(String className, List<String> hasAgent, List<String> hasLocusGeographic, List<String> hasPatient, List<String> hasLocusHost) {
+    public List<String> causes;
+
+    public PathogenTransferByVector(String className, List<String> hasAgent, List<String> hasLocusGeographic, List<String> hasPatient, List<String> hasLocusHost, List<String> causes) {
         this.className = className;
         this.hasAgent = hasAgent;
         this.hasLocusGeographic = hasLocusGeographic;
         this.hasPatient = hasPatient;
         this.hasLocusHost = hasLocusHost;
+        this.causes = causes;
     }
 
     @Override

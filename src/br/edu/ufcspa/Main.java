@@ -160,7 +160,8 @@ PathogenTransferByVector
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.VECTORPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.STATEPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION),
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION)
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION),
+                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.MANIFESTATIONPOSITION)
             );
             System.out.println(pathogenTransferByVector);
 
@@ -168,6 +169,7 @@ PathogenTransferByVector
             pathogenTransferByVectorClassesName.add(pathogenTransferByVector.className);
 
             core.pathogenTransferByVectorExistentialAxiom(pathogenTransferByVector);
+            core.pathogenTransferByVectorQuantificationAxiom(pathogenTransferByVector);
 
         }
         core.equivalentClassToUnion(manifestationClassName, pathogenTransferByVectorClassesName);

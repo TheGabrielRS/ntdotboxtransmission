@@ -16,10 +16,27 @@ public class Core {
 
     private OWLOntology owlOntology;
 
+    private HashMap<String, OWLClass> bioTopClasses;
+
     public Core(OWLDataFactory owlDataFactory, IRI iri, OWLOntology owlOntology) {
         this.owlDataFactory = owlDataFactory;
         this.iri = iri;
         this.owlOntology = owlOntology;
+        this.bioTopClasses = this.bioTopClassesInitiator();
+    }
+
+    private HashMap<String, OWLClass> bioTopClassesInitiator(){
+
+        HashMap<String, OWLClass> bioTopClasses = new HashMap<String, OWLClass>();
+
+        IRI biotopIRI = IRI.create("http://purl.org/biotop/biotop.owl#");
+
+        bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(biotopIRI+ClassName.PATHOLOGICALPROCESSBIOTOP));
+
+
+
+        return bioTopClasses;
+
     }
 
     public ChangeApplied declareClass(String className){
@@ -154,6 +171,14 @@ public class Core {
 
     private OWLClass getClass(String className){
         return this.owlDataFactory.getOWLClass(this.iri+"#"+className);
+    }
+
+    private OWLClass getClass(String uri, String className){
+        return this.owlDataFactory.getOWLClass(uri+"#"+className);
+    }
+
+    private OWLClass getClass(IRI iri, String className){
+        return this.owlDataFactory.getOWLClass(iri+className);
     }
 
 }

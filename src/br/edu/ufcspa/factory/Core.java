@@ -19,12 +19,15 @@ public class Core {
 
     private OWLOntology owlOntology;
 
-    private HashMap<String, OWLClass> bioTopClasses;
+    private IRI biotopIRI;
+
+    public HashMap<String, OWLClass> bioTopClasses;
 
     public Core(OWLDataFactory owlDataFactory, IRI iri, OWLOntology owlOntology) {
         this.owlDataFactory = owlDataFactory;
         this.iri = iri;
         this.owlOntology = owlOntology;
+        this.biotopIRI = IRI.create("http://purl.org/biotop/biotop.owl#");
         this.bioTopClasses = this.bioTopClassesInitiator();
     }
 
@@ -32,11 +35,9 @@ public class Core {
 
         HashMap<String, OWLClass> bioTopClasses = new HashMap<String, OWLClass>();
 
-        IRI biotopIRI = IRI.create("http://purl.org/biotop/biotop.owl#");
-
-        bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(biotopIRI+ClassName.PATHOLOGICALPROCESSBIOTOP));
-
-
+        bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(this.biotopIRI, ClassName.PATHOLOGICALPROCESSBIOTOP));
+        if(this.declareClass(this.biotopIRI, ClassName.VIRUS).equals(ChangeApplied.SUCCESSFULLY))
+            bioTopClasses.put(ClassName.VIRUS, getClass(this.biotopIRI, ClassName.VIRUS));
 
         return bioTopClasses;
 
@@ -49,10 +50,21 @@ public class Core {
         return this.owlOntology.add(declarationAxiom);
     }
 
+    public ChangeApplied declareClass(IRI iri, String className){
+        OWLClass owlClass = this.getClass(iri, className);
+        OWLDeclarationAxiom declarationAxiom = this.owlDataFactory.getOWLDeclarationAxiom(owlClass);
+        return this.owlOntology.add(declarationAxiom);
+    }
+
     public ChangeApplied declareSubClassOf(String className, String subclassName){
         OWLClass owlClass = this.getClass(className);
         OWLClass owlSubClass = this.getClass(subclassName);
         OWLSubClassOfAxiom className_sub_subClassName = this.owlDataFactory.getOWLSubClassOfAxiom(owlSubClass, owlClass);
+        return this.owlOntology.add(className_sub_subClassName);
+    }
+
+    public ChangeApplied declareSubClassOf(OWLClass superclass, OWLClass subClass){
+        OWLSubClassOfAxiom className_sub_subClassName = this.owlDataFactory.getOWLSubClassOfAxiom(subClass, superclass);
         return this.owlOntology.add(className_sub_subClassName);
     }
 
@@ -250,12 +262,17 @@ public class Core {
         return this.owlDataFactory.getOWLClass(this.iri+className);
     }
 
+    public OWLClass getNTDOClass(String className){
+        return this.owlDataFactory.getOWLClass(this.iri+className);
+    }
+
+
     private OWLClass getClass(String uri, String className){
         return this.owlDataFactory.getOWLClass(uri+"#"+className);
     }
 
     private OWLClass getClass(IRI iri, String className){
-        return this.owlDataFactory.getOWLClass(iri+className);
+        return this.owlDataFactory.getOWLClass(iri.getIRIString()+className);
     }
 
 }

@@ -20,7 +20,9 @@ public final class ClassName {
 
     public static final String BRAZILOCATION = "BrazilLocation";
 
-    public static final String PATHOGENTRANSFERBYVECTOR = "PathogenTransferByVector";
+    public static final String PATHOGENTRANSFERBYVECTOR = "TransferByVector";
+
+    public static final String PATHOLOGICALPROCESSBIOTOP = "PathologicalProcess";
 
 
 

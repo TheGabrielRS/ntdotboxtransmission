@@ -119,11 +119,13 @@ Manifestation/Disposition
         for(String manifestation : manifestations){
             String manifestationDisposition = manifestation+"Disposition";
             core.declareClass(manifestation);
-            core.declareClass(manifestationDisposition;
+            core.declareClass(manifestationDisposition);
 
             core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);
 
         }
+
+        core.manifestationEquivalentToPathologicalProcess(manifestations);
 
 /*
 PathogenTransferByVector

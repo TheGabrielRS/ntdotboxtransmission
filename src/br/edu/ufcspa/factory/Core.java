@@ -2,6 +2,7 @@ package br.edu.ufcspa.factory;
 
 import br.edu.ufcspa.model.ClassName;
 import br.edu.ufcspa.model.PathogenTransferByVector;
+import br.edu.ufcspa.model.PathologicalProcess;
 import br.edu.ufcspa.model.Transmission;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.semanticweb.owlapi.model.*;
@@ -43,14 +44,14 @@ public class Core {
 
     public ChangeApplied declareClass(String className){
 
-        OWLClass owlClass = this.owlDataFactory.getOWLClass(this.iri+"#"+className);
+        OWLClass owlClass = this.getClass(className);
         OWLDeclarationAxiom declarationAxiom = this.owlDataFactory.getOWLDeclarationAxiom(owlClass);
         return this.owlOntology.add(declarationAxiom);
     }
 
     public ChangeApplied declareSubClassOf(String className, String subclassName){
-        OWLClass owlClass = this.owlDataFactory.getOWLClass(this.iri+"#"+className);
-        OWLClass owlSubClass = this.owlDataFactory.getOWLClass(this.iri+"#"+subclassName);
+        OWLClass owlClass = this.getClass(className);
+        OWLClass owlSubClass = this.getClass(subclassName);
         OWLSubClassOfAxiom className_sub_subClassName = this.owlDataFactory.getOWLSubClassOfAxiom(owlSubClass, owlClass);
         return this.owlOntology.add(className_sub_subClassName);
     }
@@ -165,22 +166,42 @@ public class Core {
 
     }
 
-    public ChangeApplied manifestationEquivalentToPathologicalProcess(List<String> manifestations){
+    public ChangeApplied manifestationPathologicalProcessAxiom(PathologicalProcess pathologicalProcess){
 
-        List<OWLClass> manifestationClasses = this.getCollectionOfClasses(manifestations);
-        OWLClass pathologicalProcess = this.getClass("PathologicalProcess");
+        OWLClass manifestationClass = this.getClass(pathologicalProcess.name);
+        OWLClass pathologicalProcessMainEquivalentClass = this.getClass("PathologicalProcess");
 
-        for(OWLClass manifestationClass : manifestationClasses){
-            ArrayList equivalentClasses = new ArrayList<>();
+        this.declareSubClassOf(ClassName.PATHOLOGICALPROCESSBIOTOP, pathologicalProcess.name);
 
-            equivalentClasses.add(manifestationClass);
-            equivalentClasses.add(pathologicalProcess);
+        ArrayList equivalentClasses = new ArrayList<>();
 
-            OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(equivalentClasses);
-            
+        equivalentClasses.add(pathologicalProcessMainEquivalentClass);
 
-        }
-        return null;
+        OWLObjectUnionOf isCausedByUnionOf = this.unionOfClasses(pathologicalProcess.isCausedBy);
+        OWLObjectSomeValuesFrom isCausedByValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isCausedBy", isCausedByUnionOf);
+        equivalentClasses.add(isCausedByValuesFrom);
+
+        OWLClass isIncludedIn = this.getClass(pathologicalProcess.isIncludedIn);
+
+        OWLObjectPropertyExpression isIncludedInProperty = this.owlDataFactory.getOWLObjectProperty("#isIncludedIn");
+        OWLObjectSomeValuesFrom isIncludedInValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(isIncludedInProperty, isIncludedIn);
+
+        equivalentClasses.add(isIncludedInValuesFrom);
+
+        OWLClass isRealizationOf = this.getClass(pathologicalProcess.isRealizationOf);
+
+        OWLObjectPropertyExpression isRealizationOfProperty = this.owlDataFactory.getOWLObjectProperty("#isRealizationOf");
+        OWLObjectSomeValuesFrom isRealizationOfValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(isRealizationOfProperty, isRealizationOf);
+
+        equivalentClasses.add(isRealizationOfValuesFrom);
+
+
+        OWLObjectIntersectionOf objectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(equivalentClasses);
+
+        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(manifestationClass, objectIntersectionOf);
+
+
+        return this.owlOntology.add(equivalentClassesAxiom);
 
     }
 
@@ -226,7 +247,7 @@ public class Core {
     }
 
     private OWLClass getClass(String className){
-        return this.owlDataFactory.getOWLClass(this.iri+"#"+className);
+        return this.owlDataFactory.getOWLClass(this.iri+className);
     }
 
     private OWLClass getClass(String uri, String className){

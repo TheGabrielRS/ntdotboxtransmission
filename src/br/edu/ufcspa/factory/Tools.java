@@ -6,6 +6,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Tools {
@@ -40,6 +41,34 @@ public class Tools {
         List<String> classesFromSingleLineByColumn = Arrays.asList(lineContent.split(" "));
 
         return classesFromSingleLineByColumn;
+    }
+
+    public HashMap<String, List<String>> identifyWhichAgentCauseManifestation(List<Transmission> lines, ArrayList<String> manifestations){
+
+        HashMap<String, List<String>> combination = new HashMap<>();
+
+        for(Transmission line : lines){
+            for(String manifestation : manifestations){
+                if(line.manifestation.equalsIgnoreCase(manifestation)){
+                    List<String> agents;
+                    agents = this.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION);
+                    if(combination.get(manifestation) == null){
+                        combination.put(manifestation, agents);
+                    }
+                    else {
+                        List<String> storedAgents;
+                        storedAgents = new ArrayList<>(combination.get(manifestation));
+                        for(String agentToBeStored : agents){
+                            if(!storedAgents.contains(agentToBeStored)){
+                                storedAgents.add(agentToBeStored);
+                                combination.replace(manifestation, storedAgents);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return combination;
     }
 
     private String getLocationClassName(String className){

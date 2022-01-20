@@ -4,6 +4,7 @@ import br.edu.ufcspa.factory.Core;
 import br.edu.ufcspa.factory.Tools;
 import br.edu.ufcspa.model.ClassName;
 import br.edu.ufcspa.model.PathogenTransferByVector;
+import br.edu.ufcspa.model.PathologicalProcess;
 import br.edu.ufcspa.model.Transmission;
 import com.opencsv.bean.FieldAccess;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +20,7 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -115,17 +117,24 @@ Manifestation/Disposition
  */
 
         ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
+        HashMap<String, List<String>> manifestationIsCausedBy = tools.identifyWhichAgentCauseManifestation(denv, manifestations);
 
         for(String manifestation : manifestations){
             String manifestationDisposition = manifestation+"Disposition";
-            core.declareClass(manifestation);
-            core.declareClass(manifestationDisposition);
 
+            core.declareClass(manifestation);
+            PathologicalProcess pathologicalProcess = new PathologicalProcess(
+                    manifestation,
+                    manifestationIsCausedBy.get(manifestation),
+                    ClassName.HUMAN,
+                    manifestationDisposition
+            );
+            core.manifestationPathologicalProcessAxiom(pathologicalProcess);
+
+            core.declareClass(manifestationDisposition);
             core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);
 
         }
-
-        core.manifestationEquivalentToPathologicalProcess(manifestations);
 
 /*
 PathogenTransferByVector

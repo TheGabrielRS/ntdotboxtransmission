@@ -46,7 +46,7 @@ public class Main {
 
         Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
 
-        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.GEOGRAPHICENTITY, ClassName.ORGANISM, ClassName.VIRUS, ClassName.HUMAN};
+        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.GEOGRAPHICENTITY, ClassName.ORGANISM, ClassName.HUMAN};
 
         for (String baseItem: base) {
             core.declareClass(baseItem);
@@ -98,7 +98,7 @@ DENV
 
             for(String pathogen : pathogens){
                 core.declareClass(pathogen);
-                core.declareSubClassOf(ClassName.VIRUS, pathogen);
+                core.declareSubClassOf(core.bioTopClasses.get(ClassName.VIRUS), core.getNTDOClass(pathogen));
             }
             core.disjointClasses(pathogens);
 

@@ -217,6 +217,10 @@ public class Core {
         OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(manifestationClass, objectIntersectionOf);
 
 
+        OWLObjectAllValuesFrom owlObjectAllValuesFrom = this.owlDataFactory.getOWLObjectAllValuesFrom(isRealizationOfProperty, this.getClass(pathologicalProcess.name+"Disposition"));
+        this.owlOntology.add(this.owlDataFactory.getOWLSubClassOfAxiom(manifestationClass, owlObjectAllValuesFrom));
+
+
         return this.owlOntology.add(equivalentClassesAxiom);
 
     }

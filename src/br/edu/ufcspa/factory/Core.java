@@ -33,11 +33,15 @@ public class Core {
 
     private HashMap<String, OWLClass> bioTopClassesInitiator(){
 
-        HashMap<String, OWLClass> bioTopClasses = new HashMap<String, OWLClass>();
+        HashMap<String, OWLClass> bioTopClasses = new HashMap<>();
 
         bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(this.biotopIRI, ClassName.PATHOLOGICALPROCESSBIOTOP));
-        if(this.declareClass(this.biotopIRI, ClassName.VIRUS).equals(ChangeApplied.SUCCESSFULLY))
-            bioTopClasses.put(ClassName.VIRUS, getClass(this.biotopIRI, ClassName.VIRUS));
+
+        this.declareClass(this.biotopIRI, ClassName.VIRUS);
+        bioTopClasses.put(ClassName.VIRUS, getClass(this.biotopIRI, ClassName.VIRUS));
+
+        this.declareClass(this.biotopIRI, ClassName.INSECT);
+        bioTopClasses.put(ClassName.INSECT, getClass(this.biotopIRI, ClassName.INSECT));
 
         return bioTopClasses;
 

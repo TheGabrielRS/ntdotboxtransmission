@@ -24,6 +24,8 @@ public final class ClassName {
 
     public static final String PATHOLOGICALPROCESSBIOTOP = "PathologicalProcess";
 
+    public static final String INSECT = "Insect";
+
 
 
 }

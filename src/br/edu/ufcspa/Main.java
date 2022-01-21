@@ -109,6 +109,7 @@ Vector
 
         for(String vector : vectors){
             core.declareClass(vector);
+            core.declareSubClassOf(core.bioTopClasses.get(ClassName.INSECT), core.getNTDOClass(vector));
         }
         core.disjointClasses(vectors);
 

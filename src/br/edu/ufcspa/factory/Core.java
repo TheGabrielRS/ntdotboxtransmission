@@ -28,23 +28,38 @@ public class Core {
         this.iri = iri;
         this.owlOntology = owlOntology;
         this.biotopIRI = IRI.create("http://purl.org/biotop/biotop.owl#");
-        this.bioTopClasses = this.bioTopClassesInitiator();
+        this.bioTopClasses = new HashMap<>();
+        this.bioTopClassesInitiator();
     }
 
     private HashMap<String, OWLClass> bioTopClassesInitiator(){
 
-        HashMap<String, OWLClass> bioTopClasses = new HashMap<>();
-
         bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(this.biotopIRI, ClassName.PATHOLOGICALPROCESSBIOTOP));
 
         this.declareClass(this.biotopIRI, ClassName.VIRUS);
-        bioTopClasses.put(ClassName.VIRUS, getClass(this.biotopIRI, ClassName.VIRUS));
+        this.addBioTopClassToHash(ClassName.VIRUS);
 
         this.declareClass(this.biotopIRI, ClassName.INSECT);
-        bioTopClasses.put(ClassName.INSECT, getClass(this.biotopIRI, ClassName.INSECT));
+        this.addBioTopClassToHash(ClassName.INSECT);
+
+        this.declareClass(this.biotopIRI, ClassName.PROCESS);
+        this.addBioTopClassToHash(ClassName.PROCESS);
+
+        this.declareClass(this.biotopIRI, ClassName.DISPOSITION);
+        this.addBioTopClassToHash(ClassName.DISPOSITION);
+
+        this.declareClass(this.biotopIRI,ClassName.HUMANBIOTOP);
+        this.addBioTopClassToHash(ClassName.HUMANBIOTOP);
+
+        this.declareClass(this.biotopIRI,ClassName.GEOGRAPHICENTITY);
+        this.addBioTopClassToHash(ClassName.GEOGRAPHICENTITY);
 
         return bioTopClasses;
 
+    }
+
+    private void addBioTopClassToHash(String className){
+        this.bioTopClasses.put(className, getClass(this.biotopIRI, className));
     }
 
     public ChangeApplied declareClass(String className){
@@ -185,9 +200,9 @@ public class Core {
     public ChangeApplied manifestationPathologicalProcessAxiom(PathologicalProcess pathologicalProcess){
 
         OWLClass manifestationClass = this.getClass(pathologicalProcess.name);
-        OWLClass pathologicalProcessMainEquivalentClass = this.getClass("PathologicalProcess");
+        OWLClass pathologicalProcessMainEquivalentClass = this.bioTopClasses.get(ClassName.PATHOLOGICALPROCESSBIOTOP);
 
-        this.declareSubClassOf(ClassName.PATHOLOGICALPROCESSBIOTOP, pathologicalProcess.name);
+        this.declareSubClassOf(pathologicalProcessMainEquivalentClass, manifestationClass);
 
         ArrayList equivalentClasses = new ArrayList<>();
 

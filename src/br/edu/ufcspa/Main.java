@@ -46,14 +46,16 @@ public class Main {
 
         Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
 
-        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.GEOGRAPHICENTITY, ClassName.ORGANISM, ClassName.HUMAN};
+        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.HUMAN};
 
         for (String baseItem: base) {
             core.declareClass(baseItem);
         }
 
-        core.declareSubClassOf(ClassName.ORGANISM, ClassName.VERTEBRATE);
-        core.declareSubClassOf(ClassName.VERTEBRATE, ClassName.HUMAN);
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.HUMANBIOTOP), core.getNTDOClass(ClassName.HUMAN));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.getNTDOClass(ClassName.TRANSFER));
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.getNTDOClass(ClassName.PATHOLOGICALDISPOSITION));
 
 
 
@@ -71,16 +73,24 @@ public class Main {
         denv.remove(0); //Remove header
 
 /*
+Sanitization
+ */
+        for(Transmission line : denv){
+            String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
+            line.state = clearStateName;
+
+            line.host = ClassName.HUMAN;
+        }
+
+/*
 Location
  */
 
         core.declareClass(ClassName.BRAZILOCATION);
-        core.declareSubClassOf(ClassName.GEOGRAPHICENTITY, ClassName.BRAZILOCATION);
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY), core.getNTDOClass(ClassName.BRAZILOCATION));
         for(Transmission line : denv){
 
-            String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
-            line.state = clearStateName;
-            String locationClassName = clearStateName+"Location";
+            String locationClassName = line.state+"Location";
 
             core.declareClass(locationClassName);
             core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
@@ -173,7 +183,6 @@ PathogenTransferByVector
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION),
                     tools.identifyClassesFromSingleLineByColumn(line, Transmission.MANIFESTATIONPOSITION)
             );
-            System.out.println(pathogenTransferByVector);
 
             core.declareClass(pathogenTransferByVector.className);
             pathogenTransferByVectorClassesName.add(pathogenTransferByVector.className);

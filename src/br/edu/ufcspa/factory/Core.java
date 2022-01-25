@@ -4,6 +4,7 @@ import br.edu.ufcspa.model.ClassName;
 import br.edu.ufcspa.model.PathogenTransferByVector;
 import br.edu.ufcspa.model.PathologicalProcess;
 import br.edu.ufcspa.model.Transmission;
+import org.eclipse.rdf4j.model.vocabulary.LIST;
 import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.ChangeApplied;
@@ -23,11 +24,14 @@ public class Core {
 
     public HashMap<String, OWLClass> bioTopClasses;
 
+    private IRI btl2IRI;
+
     public Core(OWLDataFactory owlDataFactory, IRI iri, OWLOntology owlOntology) {
         this.owlDataFactory = owlDataFactory;
         this.iri = iri;
         this.owlOntology = owlOntology;
         this.biotopIRI = IRI.create("http://purl.org/biotop/biotop.owl#");
+        this.btl2IRI = IRI.create("http://purl.org/biotop/btl2.owl");
         this.bioTopClasses = new HashMap<>();
         this.bioTopClassesInitiator();
     }
@@ -140,18 +144,18 @@ public class Core {
         List<OWLClassExpression> expressionsToBeIntersected = new ArrayList<>();
         expressionsToBeIntersected.add(transfer);
 
-        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasAgent", hasAgent);
+        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
+        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#hasGeographicLocation", hasGeographicLocation);
         expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
 
 
-        OWLObjectSomeValuesFrom isPhysicallyContainedInValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isPhysicallyContainedIn", isPhysicallyContainedIn);
+        OWLObjectSomeValuesFrom isPhysicallyContainedInValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#isPhysicallyContainedIn", isPhysicallyContainedIn);
 
         OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(isPhysicallyContainedInValuesFrom, hasPatient);
 
-        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue("#hasPatient", hasPatientIntersectionProperty);
+        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue(this.btl2IRI,"#hasPatient", hasPatientIntersectionProperty);
         expressionsToBeIntersected.add(hasPatientValuesFrom);
 
         OWLObjectIntersectionOf owlObjectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(expressionsToBeIntersected);
@@ -174,18 +178,18 @@ public class Core {
         OWLObjectUnionOf causes = this.unionOfClasses(pathogenTransferByVector.causes);
 
         List<OWLClassExpression> expressionsToBeIntersected = new ArrayList<>();
-        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasAgent", hasAgent);
+        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom("#hasGeographicLocation", hasGeographicLocation);
+        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#hasGeographicLocation", hasGeographicLocation);
         expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
 
 
-        OWLObjectSomeValuesFrom causesValuesFrom = this.objectUnionToObjectSomeValuesFrom("#causes", causes);
+        OWLObjectSomeValuesFrom causesValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"#causes", causes);
 
         OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(causesValuesFrom, hasPatient);
 
-        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue("#hasPatient", hasPatientIntersectionProperty);
+        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue(this.btl2IRI,"#hasPatient", hasPatientIntersectionProperty);
         expressionsToBeIntersected.add(hasPatientValuesFrom);
 
         OWLObjectIntersectionOf owlObjectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(expressionsToBeIntersected);
@@ -209,19 +213,19 @@ public class Core {
         equivalentClasses.add(pathologicalProcessMainEquivalentClass);
 
         OWLObjectUnionOf isCausedByUnionOf = this.unionOfClasses(pathologicalProcess.isCausedBy);
-        OWLObjectSomeValuesFrom isCausedByValuesFrom = this.objectUnionToObjectSomeValuesFrom("#isCausedBy", isCausedByUnionOf);
+        OWLObjectSomeValuesFrom isCausedByValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI, "#isCausedBy", isCausedByUnionOf);
         equivalentClasses.add(isCausedByValuesFrom);
 
         OWLClass isIncludedIn = this.getClass(pathologicalProcess.isIncludedIn);
 
-        OWLObjectPropertyExpression isIncludedInProperty = this.owlDataFactory.getOWLObjectProperty("#isIncludedIn");
+        OWLObjectPropertyExpression isIncludedInProperty = this.getObjectProperty(this.btl2IRI, "#isIncludedIn");
         OWLObjectSomeValuesFrom isIncludedInValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(isIncludedInProperty, isIncludedIn);
 
         equivalentClasses.add(isIncludedInValuesFrom);
 
         OWLClass isRealizationOf = this.getClass(pathologicalProcess.isRealizationOf);
 
-        OWLObjectPropertyExpression isRealizationOfProperty = this.owlDataFactory.getOWLObjectProperty("#isRealizationOf");
+        OWLObjectPropertyExpression isRealizationOfProperty = this.getObjectProperty(this.btl2IRI,"#isRealizationOf");
         OWLObjectSomeValuesFrom isRealizationOfValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(isRealizationOfProperty, isRealizationOf);
 
         equivalentClasses.add(isRealizationOfValuesFrom);
@@ -237,6 +241,34 @@ public class Core {
 
 
         return this.owlOntology.add(equivalentClassesAxiom);
+
+    }
+
+    public ChangeApplied generalClassAxiomsHomoSapiens(PathologicalProcess pathologicalProcess){
+
+//      OWLClass generalClass = this.owlDataFactory.getOWLClass("");
+
+        OWLClass isIncludedIn = this.getNTDOClass(pathologicalProcess.isIncludedIn);
+
+        OWLObjectProperty includes = this.getObjectProperty(this.btl2IRI, "#includes");
+        OWLObjectUnionOf unionOfClasses = this.unionOfClasses(pathologicalProcess.isCausedBy);
+        OWLObjectSomeValuesFrom includesSomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(includes, unionOfClasses);
+
+        OWLObjectIntersectionOf intersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(isIncludedIn, includesSomeValuesFrom);
+
+        OWLObjectProperty isBearerOf = this.getObjectProperty(this.btl2IRI, "#isBearerOf");
+        OWLClass disposition = this.getNTDOClass(pathologicalProcess.disposition);
+        OWLObjectSomeValuesFrom isBearerOfsomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(isBearerOf, disposition);
+
+        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(intersectionOf, isBearerOfsomeValuesFrom);
+
+        return this.owlOntology.add(equivalentClassesAxiom);
+
+    }
+
+    private OWLObjectProperty getObjectProperty(IRI iri, String propertyName){
+
+        return this.owlDataFactory.getOWLObjectProperty(iri.getIRIString()+propertyName);
 
     }
 
@@ -257,8 +289,24 @@ public class Core {
 
     }
 
+    private OWLObjectSomeValuesFrom objectUnionToObjectSomeValuesFrom(IRI propertyIRI, String propertyName, OWLObjectUnionOf objectUnionOf){
+
+        OWLObjectPropertyExpression hasAgentExpression = this.getObjectProperty(propertyIRI, propertyName);
+        OWLObjectSomeValuesFrom owlObjectSomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(hasAgentExpression, objectUnionOf);
+
+        return owlObjectSomeValuesFrom;
+
+    }
+
     private OWLObjectSomeValuesFrom intersectionOfMultipleOWLObjectsAsSomeValue(String propertyName, OWLObjectIntersectionOf owlObjectIntersectionOf){
         OWLObjectPropertyExpression propertyExpression = this.owlDataFactory.getOWLObjectProperty(propertyName);
+        OWLObjectSomeValuesFrom owlObjectSomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(propertyExpression, owlObjectIntersectionOf);
+
+        return owlObjectSomeValuesFrom;
+    }
+
+    private OWLObjectSomeValuesFrom intersectionOfMultipleOWLObjectsAsSomeValue(IRI iri, String propertyName, OWLObjectIntersectionOf owlObjectIntersectionOf){
+        OWLObjectPropertyExpression propertyExpression = this.getObjectProperty(iri, propertyName);
         OWLObjectSomeValuesFrom owlObjectSomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(propertyExpression, owlObjectIntersectionOf);
 
         return owlObjectSomeValuesFrom;

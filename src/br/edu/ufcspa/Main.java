@@ -141,6 +141,7 @@ Manifestation/Disposition
                     manifestationDisposition
             );
             core.manifestationPathologicalProcessAxiom(pathologicalProcess);
+            core.generalClassAxiomsHomoSapiens(pathologicalProcess);
 
             core.declareClass(manifestationDisposition);
             core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);

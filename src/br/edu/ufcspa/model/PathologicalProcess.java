@@ -12,10 +12,13 @@ public class PathologicalProcess {
 
     public String isRealizationOf;
 
+    public String disposition;
+
     public PathologicalProcess(String name, List<String> isCausedBy, String isIncludedIn, String isRealizationOf) {
         this.name = name;
         this.isCausedBy = isCausedBy;
         this.isIncludedIn = isIncludedIn;
         this.isRealizationOf = isRealizationOf;
+        this.disposition = this.name+"Disposition";
     }
 }

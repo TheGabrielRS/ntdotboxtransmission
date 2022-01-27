@@ -46,7 +46,7 @@ public class Main {
 
         Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
 
-        String[] base = {ClassName.TRANSFER, ClassName.PATHOLOGICALDISPOSITION, ClassName.HUMAN};
+        String[] base = {ClassName.TRANSFER, ClassName.HUMAN};
 
         for (String baseItem: base) {
             core.declareClass(baseItem);
@@ -55,47 +55,61 @@ public class Main {
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.HUMANBIOTOP), core.getNTDOClass(ClassName.HUMAN));
 
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.getNTDOClass(ClassName.TRANSFER));
-        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.getNTDOClass(ClassName.PATHOLOGICALDISPOSITION));
+//        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.getNTDOClass(ClassName.PATHOLOGICALDISPOSITION));
 
 
 
         FileReader dengueTbox = null;
+        FileReader zikaTbox = null;
+        FileReader chikTbox = null;
         try {
             dengueTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-DENV.csv");
+            zikaTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-ZIKV.csv");
+            chikTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-CHIKV.csv");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        List<Transmission> denv = new CsvToBeanBuilder(dengueTbox)
-                .withType(Transmission.class)
-                .build()
-                .parse();
-        denv.remove(0); //Remove header
+        List<FileReader> tboxFiles = new ArrayList<>();
+
+        tboxFiles.add(dengueTbox);
+        tboxFiles.add(zikaTbox);
+        tboxFiles.add(chikTbox);
+
+        ArrayList<String> everyPathogen = new ArrayList<>();
+
+        for(FileReader tbox : tboxFiles){
+            List<Transmission> denv = new CsvToBeanBuilder(tbox)
+                    .withType(Transmission.class)
+                    .build()
+                    .parse();
+            denv.remove(0); //Remove header
 
 /*
 Sanitization
  */
-        for(Transmission line : denv){
-            String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
-            line.state = clearStateName;
+            for(Transmission line : denv){
+                String clearStateName = StringUtils.stripAccents(StringUtils.deleteWhitespace(line.state));
+                line.state = clearStateName;
 
-            line.host = ClassName.HUMAN;
-        }
+                line.host = ClassName.HUMAN;
+            }
 
 /*
 Location
  */
 
-        core.declareClass(ClassName.BRAZILOCATION);
-        core.declareSubClassOf(core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY), core.getNTDOClass(ClassName.BRAZILOCATION));
-        for(Transmission line : denv){
+            core.declareClass(ClassName.BRAZILOCATION);
+            core.declareSubClassOf(core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY), core.getNTDOClass(ClassName.BRAZILOCATION));
+            for(Transmission line : denv){
 
-            String locationClassName = line.state+"Location";
+                String locationClassName = line.state+"Location";
 
-            core.declareClass(locationClassName);
-            core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
+                core.declareClass(locationClassName);
+                core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
 
-        }
+            }
 
 /*
 Pathogen
@@ -110,90 +124,92 @@ DENV
                 core.declareClass(pathogen);
                 core.declareSubClassOf(core.bioTopClasses.get(ClassName.VIRUS), core.getNTDOClass(pathogen));
             }
-            core.disjointClasses(pathogens);
+            if(pathogens.size() > 1)
+                core.disjointClasses(pathogens);
+            everyPathogen.addAll(pathogens);
 
 /*
 Vector
  */
-        ArrayList<String> vectors = tools.identifyClassesFromSingleColumn(denv, Transmission.VECTORPOSITION);
+            ArrayList<String> vectors = tools.identifyClassesFromSingleColumn(denv, Transmission.VECTORPOSITION);
 
-        for(String vector : vectors){
-            core.declareClass(vector);
-            core.declareSubClassOf(core.bioTopClasses.get(ClassName.INSECT), core.getNTDOClass(vector));
-        }
-        core.disjointClasses(vectors);
+            for(String vector : vectors){
+                core.declareClass(vector);
+                core.declareSubClassOf(core.bioTopClasses.get(ClassName.INSECT), core.getNTDOClass(vector));
+            }
+            if(vectors.size() > 1)
+                core.disjointClasses(vectors);
 
 /*
 Manifestation/Disposition
  */
 
-        ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
-        HashMap<String, List<String>> manifestationIsCausedBy = tools.identifyWhichAgentCauseManifestation(denv, manifestations);
+            ArrayList<String> manifestations = tools.identifyClassesFromSingleColumn(denv, Transmission.MANIFESTATIONPOSITION);
+            HashMap<String, List<String>> manifestationIsCausedBy = tools.identifyWhichAgentCauseManifestation(denv, manifestations);
 
-        for(String manifestation : manifestations){
-            String manifestationDisposition = manifestation+"Disposition";
+            for(String manifestation : manifestations){
+                String manifestationDisposition = manifestation+"Disposition";
 
-            core.declareClass(manifestation);
-            PathologicalProcess pathologicalProcess = new PathologicalProcess(
-                    manifestation,
-                    manifestationIsCausedBy.get(manifestation),
-                    ClassName.HUMAN,
-                    manifestationDisposition
-            );
-            core.manifestationPathologicalProcessAxiom(pathologicalProcess);
-            core.generalClassAxiomsHomoSapiens(pathologicalProcess);
+                core.declareClass(manifestation);
+                PathologicalProcess pathologicalProcess = new PathologicalProcess(
+                        manifestation,
+                        manifestationIsCausedBy.get(manifestation),
+                        ClassName.HUMAN,
+                        manifestationDisposition
+                );
+                core.manifestationPathologicalProcessAxiom(pathologicalProcess);
+                core.generalClassAxiomsHomoSapiens(pathologicalProcess);
 
-            core.declareClass(manifestationDisposition);
-            core.declareSubClassOf(ClassName.PATHOLOGICALDISPOSITION, manifestationDisposition);
+                core.manifestationDisposition(manifestationDisposition);
 
-        }
+            }
 
 /*
 PathogenTransferByVector
  */
 
-        String manifestationName;
-        switch (denv.get(0).manifestation){
-            case "DengueFever":
-                manifestationName = "Dengue";
-                break;
-            case "ZikaFever":
-                manifestationName = "Zika";
-                break;
-            case "ChikungunyaFever":
-                manifestationName = "ChikungunyaFever";
-                break;
-            default:
-                manifestationName = "Pathogen";
-        }
-        String manifestationClassName = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR;
-        core.declareClass(manifestationClassName);
-        core.declareSubClassOf(ClassName.TRANSFER, manifestationClassName);
-        List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
-        int lineNumber = 1;
-        for(Transmission line : denv){
+            String manifestationName;
+            switch (denv.get(0).manifestation){
+                case "DengueFever":
+                    manifestationName = "Dengue";
+                    break;
+                case "ZikaFever":
+                    manifestationName = "Zika";
+                    break;
+                case "ChikungunyaFever":
+                    manifestationName = "Chikungunya";
+                    break;
+                default:
+                    manifestationName = "Pathogen";
+            }
+            String manifestationClassName = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR;
+            core.declareClass(manifestationClassName);
+            core.declareSubClassOf(ClassName.TRANSFER, manifestationClassName);
+            List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
+            int lineNumber = 1;
+            for(Transmission line : denv){
 
-            String className = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR+"_"+lineNumber;
-            lineNumber++;
+                String className = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR+"_"+lineNumber;
+                lineNumber++;
 
-            PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
-                    className,
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.VECTORPOSITION),
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.STATEPOSITION),
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION),
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION),
-                    tools.identifyClassesFromSingleLineByColumn(line, Transmission.MANIFESTATIONPOSITION)
-            );
+                PathogenTransferByVector pathogenTransferByVector = new PathogenTransferByVector(
+                        className,
+                        tools.identifyClassesFromSingleLineByColumn(line, Transmission.VECTORPOSITION),
+                        tools.identifyClassesFromSingleLineByColumn(line, Transmission.STATEPOSITION),
+                        tools.identifyClassesFromSingleLineByColumn(line, Transmission.PATHOGENPOSITION),
+                        tools.identifyClassesFromSingleLineByColumn(line, Transmission.HOSTPOSITION),
+                        tools.identifyClassesFromSingleLineByColumn(line, Transmission.MANIFESTATIONPOSITION)
+                );
 
-            core.declareClass(pathogenTransferByVector.className);
-            pathogenTransferByVectorClassesName.add(pathogenTransferByVector.className);
+                core.declareClass(pathogenTransferByVector.className);
+                pathogenTransferByVectorClassesName.add(pathogenTransferByVector.className);
 
-            core.pathogenTransferByVectorExistentialAxiom(pathogenTransferByVector);
-            core.pathogenTransferByVectorQuantificationAxiom(pathogenTransferByVector);
+                core.pathogenTransferByVectorExistentialAxiom(pathogenTransferByVector);
+                core.pathogenTransferByVectorQuantificationAxiom(pathogenTransferByVector);
 
-        }
-        core.equivalentClassToUnion(manifestationClassName, pathogenTransferByVectorClassesName);
-        core.disjointClasses(pathogenTransferByVectorClassesName);
+            }
+            core.equivalentClassToUnion(manifestationClassName, pathogenTransferByVectorClassesName);
+            core.disjointClasses(pathogenTransferByVectorClassesName);
 
 
 
@@ -204,6 +220,11 @@ PathogenTransferByVector
 //        OWLClass
 
 
+
+        }
+
+        core.disjointClasses(everyPathogen);
+
         File tboxFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tboxTransmission.owl");
         try {
             man.saveOntology(ntdoTboxTransmission, new OWLXMLDocumentFormat(), new FileOutputStream(tboxFile));
@@ -212,6 +233,7 @@ PathogenTransferByVector
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
 
 
     }

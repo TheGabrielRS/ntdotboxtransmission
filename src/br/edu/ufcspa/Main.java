@@ -12,6 +12,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.FunctionalSyntaxDocumentFormat;
 import org.semanticweb.owlapi.formats.ManchesterSyntaxDocumentFormat;
 import org.semanticweb.owlapi.formats.OWLXMLDocumentFormat;
+import org.semanticweb.owlapi.formats.RDFXMLDocumentFormat;
 import org.semanticweb.owlapi.model.*;
 
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -52,9 +53,20 @@ public class Main {
             core.declareClass(baseItem);
         }
 
-        core.declareSubClassOf(core.bioTopClasses.get(ClassName.HUMANBIOTOP), core.getNTDOClass(ClassName.HUMAN));
+//        core.declareSubClassOf(core.bioTopClasses.get(ClassName.HUMANBIOTOP), core.getNTDOClass(ClassName.HUMAN));
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.ORGANISM), core.getNTDOClass(ClassName.HUMAN));
 
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.getNTDOClass(ClassName.TRANSFER));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.ORGANISM), core.bioTopClasses.get(ClassName.VIRUS));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.ORGANISM), core.bioTopClasses.get(ClassName.INSECT));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.bioTopClasses.get(ClassName.PATHOLOGICALDISPOSITION));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.bioTopClasses.get(ClassName.PATHOLOGICALPROCESSBIOTOP));
+
+        core.declareSubClassOf(core.bioTopClasses.get(ClassName.IMMATERIALTHREEDIMENSIONAL), core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY));
 //        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.getNTDOClass(ClassName.PATHOLOGICALDISPOSITION));
 
 
@@ -78,6 +90,8 @@ public class Main {
         tboxFiles.add(chikTbox);
 
         ArrayList<String> everyPathogen = new ArrayList<>();
+        ArrayList<String> everyPathologicalProcess = new ArrayList<>();
+        ArrayList<String> everyPathologicalDisposition = new ArrayList<>();
 
         for(FileReader tbox : tboxFiles){
             List<Transmission> denv = new CsvToBeanBuilder(tbox)
@@ -102,14 +116,17 @@ Location
 
             core.declareClass(ClassName.BRAZILOCATION);
             core.declareSubClassOf(core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY), core.getNTDOClass(ClassName.BRAZILOCATION));
+            ArrayList everyLocation = new ArrayList();
             for(Transmission line : denv){
 
                 String locationClassName = line.state+"Location";
+                everyLocation.add(locationClassName);
 
                 core.declareClass(locationClassName);
                 core.declareSubClassOf(ClassName.BRAZILOCATION, locationClassName);
 
             }
+            core.disjointClasses(everyLocation);
 
 /*
 Pathogen
@@ -124,8 +141,8 @@ DENV
                 core.declareClass(pathogen);
                 core.declareSubClassOf(core.bioTopClasses.get(ClassName.VIRUS), core.getNTDOClass(pathogen));
             }
-            if(pathogens.size() > 1)
-                core.disjointClasses(pathogens);
+//            if(pathogens.size() > 1)
+//                core.disjointClasses(pathogens);
             everyPathogen.addAll(pathogens);
 
 /*
@@ -160,7 +177,10 @@ Manifestation/Disposition
                 core.manifestationPathologicalProcessAxiom(pathologicalProcess);
                 core.generalClassAxiomsHomoSapiens(pathologicalProcess);
 
-                core.manifestationDisposition(manifestationDisposition);
+                core.manifestationDisposition(manifestationDisposition, manifestation);
+
+                everyPathologicalProcess.add(manifestation);
+                everyPathologicalDisposition.add(manifestationDisposition);
 
             }
 
@@ -213,21 +233,15 @@ PathogenTransferByVector
 
 
 
-//        OWLClass transfer = dataFactory.getOWLClass(iri+"#Transfer");
-//        OWLDeclarationAxiom declarationAxiom = dataFactory.getOWLDeclarationAxiom(transfer);
-//        ntdoTboxTransmission.add(declarationAxiom);
-//        OWLClass pathologicalDisposition = dataFactory.getOWLClass(iri+"#PathologicalDisposition");
-//        OWLClass
-
-
-
         }
 
         core.disjointClasses(everyPathogen);
+        core.disjointClasses(everyPathologicalProcess);
+        core.disjointClasses(everyPathologicalDisposition);
 
         File tboxFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tboxTransmission.owl");
         try {
-            man.saveOntology(ntdoTboxTransmission, new OWLXMLDocumentFormat(), new FileOutputStream(tboxFile));
+            man.saveOntology(ntdoTboxTransmission, new RDFXMLDocumentFormat(), new FileOutputStream(tboxFile));
         } catch (OWLOntologyStorageException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

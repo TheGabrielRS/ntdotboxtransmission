@@ -32,6 +32,8 @@ public final class ClassName {
 
     public static final String DISPOSITION = "Disposition";
 
+    public static final String IMMATERIALTHREEDIMENSIONAL = "ImmaterialThreeDimensionalPhysicalEntity";
+
 
 
 }

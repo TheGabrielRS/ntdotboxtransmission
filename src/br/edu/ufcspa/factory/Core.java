@@ -49,14 +49,19 @@ public class Core {
         this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.PROCESS);
 //        this.addBioTopClassToHash(ClassName.PROCESS);
 
-        this.declareClass(this.biotopIRI, ClassName.PATHOLOGICALDISPOSITION);
+        this.declareAndStoreBioTopClass(this.biotopIRI, ClassName.PATHOLOGICALDISPOSITION);
 //        this.addBioTopClassToHash(ClassName.DISPOSITION);
+        this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.DISPOSITION);
 
-        this.declareAndStoreBioTopClass(this.biotopIRI,ClassName.HUMANBIOTOP);
+//        this.declareAndStoreBioTopClass(this.biotopIRI,ClassName.HUMANBIOTOP);
 //        this.addBioTopClassToHash(ClassName.HUMANBIOTOP);
 
         this.declareAndStoreBioTopClass(this.biotopIRI,ClassName.GEOGRAPHICENTITY);
 //        this.addBioTopClassToHash(ClassName.GEOGRAPHICENTITY);
+
+        this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.IMMATERIALTHREEDIMENSIONAL);
+
+        this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.ORGANISM);
 
         return bioTopClasses;
 
@@ -148,11 +153,11 @@ public class Core {
         OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"hasGeographicLocation", hasGeographicLocation);
+        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.iri,"hasGeographicLocation", hasGeographicLocation);
         expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
 
 
-        OWLObjectSomeValuesFrom isPhysicallyContainedInValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"isPhysicallyContainedIn", isPhysicallyContainedIn);
+        OWLObjectSomeValuesFrom isPhysicallyContainedInValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.biotopIRI,"isPhysicallyContainedIn", isPhysicallyContainedIn);
 
         OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(isPhysicallyContainedInValuesFrom, hasPatient);
 
@@ -179,18 +184,18 @@ public class Core {
         OWLObjectUnionOf causes = this.unionOfClasses(pathogenTransferByVector.causes);
 
         List<OWLClassExpression> expressionsToBeIntersected = new ArrayList<>();
-        OWLObjectSomeValuesFrom hasAgentValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"hasAgent", hasAgent);
+        OWLObjectAllValuesFrom hasAgentValuesFrom = this.objectUnionToAllValuesFrom(this.btl2IRI,"hasAgent", hasAgent);
         expressionsToBeIntersected.add(hasAgentValuesFrom);
 
-        OWLObjectSomeValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"hasGeographicLocation", hasGeographicLocation);
+        OWLObjectAllValuesFrom hasGeographicLocationValuesFrom = this.objectUnionToAllValuesFrom(this.iri,"hasGeographicLocation", hasGeographicLocation);
         expressionsToBeIntersected.add(hasGeographicLocationValuesFrom);
 
 
-        OWLObjectSomeValuesFrom causesValuesFrom = this.objectUnionToObjectSomeValuesFrom(this.btl2IRI,"causes", causes);
+        OWLObjectAllValuesFrom causesValuesFrom = this.objectUnionToAllValuesFrom(this.btl2IRI,"causes", causes);
 
         OWLObjectIntersectionOf hasPatientIntersectionProperty = this.owlDataFactory.getOWLObjectIntersectionOf(causesValuesFrom, hasPatient);
 
-        OWLObjectSomeValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsSomeValue(this.btl2IRI,"hasPatient", hasPatientIntersectionProperty);
+        OWLObjectAllValuesFrom hasPatientValuesFrom = this.intersectionOfMultipleOWLObjectsAsAllValue(this.btl2IRI,"hasPatient", hasPatientIntersectionProperty);
         expressionsToBeIntersected.add(hasPatientValuesFrom);
 
         OWLObjectIntersectionOf owlObjectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(expressionsToBeIntersected);
@@ -202,8 +207,23 @@ public class Core {
 
     }
 
-    public ChangeApplied manifestationPathologicalProcessAxiom(PathologicalProcess pathologicalProcess){
+    public OWLObjectAllValuesFrom objectUnionToAllValuesFrom(IRI propertyIRI, String propertyName, OWLObjectUnionOf objectUnionOf){
 
+        OWLObjectPropertyExpression hasAgentExpression = this.getObjectProperty(propertyIRI, propertyName);
+        OWLObjectAllValuesFrom owlObjectAllValuesFrom = this.owlDataFactory.getOWLObjectAllValuesFrom(hasAgentExpression, objectUnionOf);
+
+        return owlObjectAllValuesFrom;
+    }
+
+    private OWLObjectAllValuesFrom intersectionOfMultipleOWLObjectsAsAllValue(IRI iri, String propertyName, OWLObjectIntersectionOf owlObjectIntersectionOf){
+        OWLObjectPropertyExpression propertyExpression = this.getObjectProperty(iri, propertyName);
+        OWLObjectAllValuesFrom owlObjectAllValuesFrom = this.owlDataFactory.getOWLObjectAllValuesFrom(propertyExpression, owlObjectIntersectionOf);
+
+        return owlObjectAllValuesFrom;
+    }
+
+    public ChangeApplied manifestationPathologicalProcessAxiom(PathologicalProcess pathologicalProcess){
+        System.out.println(pathologicalProcess.name);
         OWLClass manifestationClass = this.getClass(pathologicalProcess.name);
         OWLClass pathologicalProcessMainEquivalentClass = this.bioTopClasses.get(ClassName.PATHOLOGICALPROCESSBIOTOP);
 
@@ -231,7 +251,6 @@ public class Core {
 
         equivalentClasses.add(isRealizationOfValuesFrom);
 
-
         OWLObjectIntersectionOf objectIntersectionOf = this.owlDataFactory.getOWLObjectIntersectionOf(equivalentClasses);
 
         OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(manifestationClass, objectIntersectionOf);
@@ -245,7 +264,7 @@ public class Core {
 
     }
 
-    public ChangeApplied manifestationDisposition(String dispositionName){
+    public ChangeApplied manifestationDisposition(String dispositionName, String manifestation){
         this.declareClass(dispositionName);
 
         OWLClass pathologicalDisposition = this.getClass(this.biotopIRI, ClassName.PATHOLOGICALDISPOSITION);
@@ -253,8 +272,8 @@ public class Core {
         this.declareSubClassOf(pathologicalDisposition, dispositionClass);
 
         OWLObjectProperty hasRealization = this.getObjectProperty(this.btl2IRI, "hasRealization");
-
-        OWLObjectAllValuesFrom owlObjectAllValuesFrom = this.owlDataFactory.getOWLObjectAllValuesFrom(hasRealization, dispositionClass);
+        OWLClass manifestationClass = this.getNTDOClass(manifestation);
+        OWLObjectAllValuesFrom owlObjectAllValuesFrom = this.owlDataFactory.getOWLObjectAllValuesFrom(hasRealization, manifestationClass);
 
         return this.owlOntology.add(this.owlDataFactory.getOWLSubClassOfAxiom(dispositionClass, owlObjectAllValuesFrom));
 

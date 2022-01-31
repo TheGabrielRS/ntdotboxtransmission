@@ -1,0 +1,28 @@
+IBGECode,GeographicLocation,Vector,Host,Pathogen,Manifestation,AedesAegypt,AedesAlbopictus,ZIKV
+11,Rondônia,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+12,Acre,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+13,Amazonas,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+14,Roraima,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+15,Pará,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+16,Amapá,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+17,Tocantins,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+21,Maranhão,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+22,Piauí,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+23,Ceará,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+24,Rio Grande do Norte,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+25,Paraíba,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+26,Pernambuco,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+27,Alagoas,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+28,Sergipe,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+29,Bahia,AedesAegypt AedesAlbopictus,Human,ZIKV,ZikaFever,AedesAegypt,AedesAlbopictus,ZIKV
+31,Minas Gerais,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+32,Espírito Santo,AedesAegypt AedesAlbopictus,Human,ZIKV,ZikaFever,AedesAegypt,AedesAlbopictus,ZIKV
+33,Rio de Janeiro,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+35,São Paulo,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+41,Paraná,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+42,Santa Catarina,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+43,Rio Grande do Sul,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+50,Mato Grosso do Sul,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+51,Mato Grosso,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+52,Goiás,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV
+53,Distrito Federal,AedesAegypt ,Human,ZIKV,ZikaFever,AedesAegypt,,ZIKV

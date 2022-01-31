@@ -47,6 +47,28 @@ public class Main {
 
         Core core = new Core(dataFactory, iri, ntdoTboxTransmission);
 
+        FileReader dengueTbox = null;
+        FileReader zikaTbox = null;
+        FileReader chikTbox = null;
+        try {
+            dengueTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-DENV.csv");
+            zikaTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-ZIKV.csv");
+            chikTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-CHIKV.csv");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        List<FileReader> tboxFiles = new ArrayList<>();
+
+        tboxFiles.add(dengueTbox);
+        tboxFiles.add(zikaTbox);
+        tboxFiles.add(chikTbox);
+
+        ArrayList<String> everyPathogen = new ArrayList<>();
+        ArrayList<String> everyPathologicalProcess = new ArrayList<>();
+        ArrayList<String> everyPathologicalDisposition = new ArrayList<>();
+        ArrayList<String> transferEquivalentTo = new ArrayList<>();
         String[] base = {ClassName.TRANSFER, ClassName.HUMAN};
 
         for (String baseItem: base) {
@@ -71,27 +93,9 @@ public class Main {
 
 
 
-        FileReader dengueTbox = null;
-        FileReader zikaTbox = null;
-        FileReader chikTbox = null;
-        try {
-            dengueTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-DENV.csv");
-            zikaTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-ZIKV.csv");
-            chikTbox = new FileReader("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tbox-CHIKV.csv");
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
-        List<FileReader> tboxFiles = new ArrayList<>();
 
-        tboxFiles.add(dengueTbox);
-        tboxFiles.add(zikaTbox);
-        tboxFiles.add(chikTbox);
-
-        ArrayList<String> everyPathogen = new ArrayList<>();
-        ArrayList<String> everyPathologicalProcess = new ArrayList<>();
-        ArrayList<String> everyPathologicalDisposition = new ArrayList<>();
 
         for(FileReader tbox : tboxFiles){
             List<Transmission> denv = new CsvToBeanBuilder(tbox)
@@ -205,6 +209,7 @@ PathogenTransferByVector
             String manifestationClassName = manifestationName+ClassName.PATHOGENTRANSFERBYVECTOR;
             core.declareClass(manifestationClassName);
             core.declareSubClassOf(ClassName.TRANSFER, manifestationClassName);
+            transferEquivalentTo.add(manifestationClassName);
             List<String> pathogenTransferByVectorClassesName = new ArrayList<>();
             int lineNumber = 1;
             for(Transmission line : denv){
@@ -238,6 +243,7 @@ PathogenTransferByVector
         core.disjointClasses(everyPathogen);
         core.disjointClasses(everyPathologicalProcess);
         core.disjointClasses(everyPathologicalDisposition);
+        core.equivalentClassToUnion(ClassName.TRANSFER, transferEquivalentTo);
 
         File tboxFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\tboxTransmission.owl");
         try {

@@ -3,12 +3,8 @@ package br.edu.ufcspa.factory;
 import br.edu.ufcspa.model.ClassName;
 import br.edu.ufcspa.model.PathogenTransferByVector;
 import br.edu.ufcspa.model.PathologicalProcess;
-import br.edu.ufcspa.model.Transmission;
-import org.eclipse.rdf4j.model.vocabulary.LIST;
-import org.eclipse.rdf4j.model.vocabulary.OWL;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.ChangeApplied;
-import uk.ac.manchester.cs.owl.owlapi.OWLObjectSomeValuesFromImpl;
 
 import java.util.*;
 
@@ -41,23 +37,17 @@ public class Core {
         bioTopClasses.put(ClassName.PATHOLOGICALPROCESSBIOTOP, this.getClass(this.biotopIRI, ClassName.PATHOLOGICALPROCESSBIOTOP));
 
         this.declareAndStoreBioTopClass(this.biotopIRI, ClassName.VIRUS);
-//        this.addBioTopClassToHash(ClassName.VIRUS);
 
         this.declareAndStoreBioTopClass(this.biotopIRI, ClassName.INSECT);
-//        this.addBioTopClassToHash(ClassName.INSECT);
 
         this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.PROCESS);
-//        this.addBioTopClassToHash(ClassName.PROCESS);
 
         this.declareAndStoreBioTopClass(this.biotopIRI, ClassName.PATHOLOGICALDISPOSITION);
-//        this.addBioTopClassToHash(ClassName.DISPOSITION);
+
         this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.DISPOSITION);
 
-//        this.declareAndStoreBioTopClass(this.biotopIRI,ClassName.HUMANBIOTOP);
-//        this.addBioTopClassToHash(ClassName.HUMANBIOTOP);
 
         this.declareAndStoreBioTopClass(this.biotopIRI,ClassName.GEOGRAPHICENTITY);
-//        this.addBioTopClassToHash(ClassName.GEOGRAPHICENTITY);
 
         this.declareAndStoreBioTopClass(this.btl2IRI, ClassName.IMMATERIALTHREEDIMENSIONAL);
 
@@ -97,13 +87,6 @@ public class Core {
         return this.owlOntology.add(className_sub_subClassName);
     }
 
-    public ChangeApplied disjointClasses(String[] classesName){
-
-        List<String> classes = new ArrayList<>(Arrays.asList(classesName));
-
-        return this.disjointClasses(classes);
-
-    }
 
     public ChangeApplied disjointClasses(List<String> classesName){
         List<OWLClass> classesToBeDisjoint = new ArrayList<>();
@@ -115,15 +98,6 @@ public class Core {
         OWLDisjointClassesAxiom disjointClassesAxiom = this.owlDataFactory.getOWLDisjointClassesAxiom(classesToBeDisjoint);
         return this.owlOntology.add(disjointClassesAxiom);
     }
-
-    public ChangeApplied equivalentClasses(List<OWLClass> equivalentClasses){
-
-        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(equivalentClasses);
-        return this.owlOntology.add(equivalentClassesAxiom);
-
-    }
-
-
 
     public ChangeApplied equivalentClassToUnion(String className, List<String> classesToBeUnion){
         OWLObjectUnionOf unionOfClasses = this.unionOfClasses(classesToBeUnion);
@@ -223,7 +197,7 @@ public class Core {
     }
 
     public ChangeApplied manifestationPathologicalProcessAxiom(PathologicalProcess pathologicalProcess){
-        System.out.println(pathologicalProcess.name);
+
         OWLClass manifestationClass = this.getClass(pathologicalProcess.name);
         OWLClass pathologicalProcessMainEquivalentClass = this.bioTopClasses.get(ClassName.PATHOLOGICALPROCESSBIOTOP);
 
@@ -281,8 +255,6 @@ public class Core {
 
     public ChangeApplied generalClassAxiomsHomoSapiens(PathologicalProcess pathologicalProcess){
 
-//      OWLClass generalClass = this.owlDataFactory.getOWLClass("");
-
         OWLClass isIncludedIn = this.getNTDOClass(pathologicalProcess.isIncludedIn);
 
         OWLObjectProperty includes = this.getObjectProperty(this.btl2IRI, "includes");
@@ -304,23 +276,6 @@ public class Core {
     private OWLObjectProperty getObjectProperty(IRI iri, String propertyName){
 
         return this.owlDataFactory.getOWLObjectProperty(iri.getIRIString()+propertyName);
-
-    }
-
-    private ChangeApplied equivalentClassesAxiomStatement(List<OWLClassExpression> objectList){
-
-        OWLEquivalentClassesAxiom equivalentClassesAxiom = this.owlDataFactory.getOWLEquivalentClassesAxiom(objectList);
-
-        return this.owlOntology.add(equivalentClassesAxiom);
-
-    }
-
-    private OWLObjectSomeValuesFrom objectUnionToObjectSomeValuesFrom(String propertyName, OWLObjectUnionOf objectUnionOf){
-
-        OWLObjectPropertyExpression hasAgentExpression = this.owlDataFactory.getOWLObjectProperty(propertyName);
-        OWLObjectSomeValuesFrom owlObjectSomeValuesFrom = this.owlDataFactory.getOWLObjectSomeValuesFrom(hasAgentExpression, objectUnionOf);
-
-        return owlObjectSomeValuesFrom;
 
     }
 

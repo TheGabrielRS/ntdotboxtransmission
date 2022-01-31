@@ -1,7 +1,5 @@
 package br.edu.ufcspa.model;
 
-import org.semanticweb.owlapi.model.OWLClass;
-
 import java.util.List;
 
 public class PathogenTransferByVector {

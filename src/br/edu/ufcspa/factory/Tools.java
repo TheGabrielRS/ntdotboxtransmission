@@ -2,8 +2,6 @@ package br.edu.ufcspa.factory;
 
 import br.edu.ufcspa.model.Transmission;
 import org.apache.commons.lang3.StringUtils;
-import org.semanticweb.owlapi.model.OWLClass;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

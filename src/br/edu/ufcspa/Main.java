@@ -29,19 +29,12 @@ public class Main {
 
     public static void main(String[] args) throws OWLOntologyCreationException {
 
-//        OWLOntologyManager man = OWLManager.createOWLOntologyManager();
-//
-//        File ntdoFile = new File("C:\\Users\\Pichau\\IdeaProjects\\NTDOTBoxGenerator\\ntdo2.owl");
 
-//
         IRI iri = IRI.create("http://purl.org/ntdo2/");
         OWLOntologyManager man = OWLManager.createOWLOntologyManager();
 
         OWLOntology ntdoTboxTransmission = man.createOntology(iri);
 
-        /*
-        Criando classes base
-         */
 
         OWLDataFactory dataFactory = ntdoTboxTransmission.getOWLOntologyManager().getOWLDataFactory();
 
@@ -75,7 +68,6 @@ public class Main {
             core.declareClass(baseItem);
         }
 
-//        core.declareSubClassOf(core.bioTopClasses.get(ClassName.HUMANBIOTOP), core.getNTDOClass(ClassName.HUMAN));
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.ORGANISM), core.getNTDOClass(ClassName.HUMAN));
 
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.getNTDOClass(ClassName.TRANSFER));
@@ -89,7 +81,6 @@ public class Main {
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.PROCESS), core.bioTopClasses.get(ClassName.PATHOLOGICALPROCESSBIOTOP));
 
         core.declareSubClassOf(core.bioTopClasses.get(ClassName.IMMATERIALTHREEDIMENSIONAL), core.bioTopClasses.get(ClassName.GEOGRAPHICENTITY));
-//        core.declareSubClassOf(core.bioTopClasses.get(ClassName.DISPOSITION), core.getNTDOClass(ClassName.PATHOLOGICALDISPOSITION));
 
 
 
@@ -135,9 +126,6 @@ Location
 /*
 Pathogen
 */
-/*
-DENV
-*/
             Tools tools = new Tools();
             ArrayList<String> pathogens = tools.identifyClassesFromSingleColumn(denv, Transmission.PATHOGENPOSITION);
 
@@ -145,8 +133,6 @@ DENV
                 core.declareClass(pathogen);
                 core.declareSubClassOf(core.bioTopClasses.get(ClassName.VIRUS), core.getNTDOClass(pathogen));
             }
-//            if(pathogens.size() > 1)
-//                core.disjointClasses(pathogens);
             everyPathogen.addAll(pathogens);
 
 /*
